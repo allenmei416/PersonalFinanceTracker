@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace PersonalFinanceTracker.Data.Models
 {
-    internal class Category
+    public class Category
     {
+        public int CategoryId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+
+        public ICollection<Transaction>? Transactions { get; set; }
     }
+
 }

@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace PersonalFinanceTracker.Data.Models
 {
-    internal class Transaction
+    public class Transaction
     {
+        public int TransactionId { get; set; }
+        public int CategoryId { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime Date { get; set; }
+        public string? Note { get; set; }
+
+        public Category? Category { get; set; }
     }
 }

@@ -11,7 +11,7 @@ using PersonalFinanceTracker.Data;
 namespace PersonalFinanceTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251007033457_InitialCreate")]
+    [Migration("20251014014815_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,9 +20,9 @@ namespace PersonalFinanceTracker.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.9")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 #pragma warning restore 612, 618
         }
     }
