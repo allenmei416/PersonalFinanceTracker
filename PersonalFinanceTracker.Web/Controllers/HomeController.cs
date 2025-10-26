@@ -1,21 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
+using PersonalFinanceTracker.Core.Dto;
 using PersonalFinanceTracker.Web.Models;
 using System.Diagnostics;
+using System.Net.Http;
 
 namespace PersonalFinanceTracker.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly HttpClient _httpClient;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
+            _httpClient = httpClientFactory.CreateClient("API");
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var transactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
+            return View(transactions);
         }
 
         public IActionResult Privacy()

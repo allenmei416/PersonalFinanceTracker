@@ -1,8 +1,27 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<PersonalFinanceTracker.Core.Dto.TransactionDto>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Transactions</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tx in Model)
+            {
+                <tr>
+                    <td>@tx.CategoryName</td>
+                    <td>@tx.Amount.ToString("C")</td>
+                    <td>@tx.Date.ToShortDateString()</td>
+                    <td>@tx.Note</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

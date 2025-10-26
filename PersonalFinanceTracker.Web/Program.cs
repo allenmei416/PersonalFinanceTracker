@@ -9,6 +9,11 @@ namespace PersonalFinanceTracker.Web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddHttpClient("API", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7008/");
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

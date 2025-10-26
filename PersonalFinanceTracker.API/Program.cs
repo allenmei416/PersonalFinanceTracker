@@ -11,14 +11,14 @@ namespace PersonalFinanceTracker.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(
-                    builder.Configuration.GetConnectionString("DefaultConnection2"),
-                    new MySqlServerVersion(new Version(8, 0, 32))
-                ));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            //builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseMySql(
+            //        builder.Configuration.GetConnectionString("DefaultConnection2"),
+            //        new MySqlServerVersion(new Version(8, 0, 32))
+            //    ));
 
             // Add services to the container.
             builder.Services.AddScoped<ICategoryService, CategoryService>();
