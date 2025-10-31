@@ -1,27 +1,78 @@
 ﻿@model IEnumerable<PersonalFinanceTracker.Core.Dto.TransactionDto>
 
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Transactions</h2>
+<div class="container-fluid mt-4">
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Note</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var tx in Model)
-            {
-                <tr>
-                    <td>@tx.CategoryName</td>
-                    <td>@tx.Amount.ToString("C")</td>
-                    <td>@tx.Date.ToShortDateString()</td>
-                    <td>@tx.Note</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <!-- First Row -->
+    <div class="row mb-4">
+        <!-- Left box (1/3 width) -->
+        <div class="col-md-4">
+            <div class="dashboard-box">
+                <h5>Summary Box</h5>
+            </div>
+        </div>
+
+        <!-- Right box (2/3 width) -->
+        <div class="col-md-8">
+                <!-- Table container -->
+            <div class="dashboard-box">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <input type="text" class="form-control w-50" placeholder="Filter transactions..." id="filterInput" />
+                    <button class="btn btn-primary" onclick="location.href='@Url.Action("AddTransaction", "Transactions")'">Add Transaction</button>
+                </div>
+
+                <div class="table-container">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Date Added</th>
+                                <th>Note</th>
+                                <th>Actions</th> <!-- New column for buttons -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var tx in Model)
+                            {
+                                <tr>
+                                    <td>@tx.CategoryName</td>
+                                    <td>@tx.Amount.ToString("C")</td>
+                                    <td>@tx.Date.ToShortDateString()</td>
+                                    <td>@tx.Note</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-warning me-1" onclick="alert('Edit transaction');">
+                                            Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="alert('Delete transaction');">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Second Row -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="dashboard-box">
+                <h5>Box 1</h5>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-box">
+                <h5>Box 2</h5>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-box">
+            </div>
+        </div>
+    </div>
+
 </div>

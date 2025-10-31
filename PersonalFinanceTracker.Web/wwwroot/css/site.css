@@ -1,22 +1,96 @@
 html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    font-size: 16px; /* fixed font size */
+    position: relative;
+    min-height: 100%;
+    overflow: hidden; /* prevent page scroll */
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0; /* remove default margin */
+}
+
+/* Focus styles */
+.btn:focus, 
+.btn:active:focus, 
+.btn-link.nav-link:focus, 
+.form-control:focus, 
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* Full dashboard container */
+.full-width-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* fixed viewport height */
+    gap: 15px;
+}
+
+/* First row: summary + table */
+.row-first {
+    display: flex;
+    height: 30%; /* exact half of container */
+    gap: 15px;
+}
+
+/* Left summary box (1/3 width) */
+.left-box {
+    width: 30%;
+    height: 100%;
+}
+
+/* Right table box (2/3 width) */
+.table-box {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Dashboard boxes */
+.dashboard-box {
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(1,1,1,0.3);
+    background-color: #fff;
+    height: 100%; /* fill parent */
+    overflow-y: auto; /* scrollable if content overflows */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Table container scroll */
+.table-container {
+    max-height: 350px; /* fixed height */
+    overflow-y: auto;
+    border-radius: 16px;
+    padding: 0;
+}
+
+/* Sticky table header */
+.table-container thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
+}
+
+/* Controls at top */
+.table-container .d-flex {
+    width: 100%;
+}
+
+/* Second row: 3 boxes evenly */
+.row-second {
+    display: flex;
+    height: 50%; /* exact half of container */
+    gap: 15px;
+}
+
+.row-second .dashboard-box {
+    width: 33.3333%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
 }
