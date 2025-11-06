@@ -1,3 +1,14 @@
+html, body {
+    font-family: 'Inter', sans-serif !important;
+    font-feature-settings: 'liga' 1, 'calt' 1;
+}
+
+@supports (font-variation-settings: normal) {
+    html, body {
+        font-family: 'InterVariable', sans-serif !important;
+    }
+}
+
 html {
     font-size: 16px; /* fixed font size */
     position: relative;
@@ -7,6 +18,10 @@ html {
 
 body {
     margin: 0; /* remove default margin */
+    font-size: 16px;
+    line-height: 1.6;
+    color: #212529;
+    background-color: #f4f6f8;
 }
 
 /* Focus styles */
