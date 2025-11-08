@@ -4,7 +4,7 @@ namespace PersonalFinanceTracker.Web.Models
 {
     public class DashboardViewModel
     {
-        public IEnumerable<TransactionDto> Transactions { get; set; }
-        public CreateTransactionDto NewTransaction { get; set; }
+        public List<TransactionDto> Transactions { get; set; } = new();
+        public List<CategoryDto> Categories { get; set; } = new();
     }
 }

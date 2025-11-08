@@ -34,13 +34,51 @@ namespace PersonalFinanceTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            Name = "Food"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            Name = "Transport"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            Name = "Entertainment"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            Name = "Bills"
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            Name = "Salary"
+                        },
+                        new
+                        {
+                            CategoryId = 6,
+                            Name = "Health"
+                        },
+                        new
+                        {
+                            CategoryId = 7,
+                            Name = "Shopping"
+                        },
+                        new
+                        {
+                            CategoryId = 8,
+                            Name = "Others"
+                        });
                 });
 
             modelBuilder.Entity("PersonalFinanceTracker.Data.Models.Transaction", b =>

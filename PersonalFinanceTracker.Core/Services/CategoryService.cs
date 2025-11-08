@@ -22,8 +22,7 @@ namespace PersonalFinanceTracker.Core.Services
                 .Select(c => new CategoryDto
                 {
                     CategoryId = c.CategoryId,
-                    Name = c.Name,
-                    Type = c.Type
+                    Name = c.Name
                 })
                 .ToListAsync();
         }
@@ -35,8 +34,7 @@ namespace PersonalFinanceTracker.Core.Services
 
             var category = new Category
             {
-                Name = dto.Name,
-                Type = dto.Type
+                Name = dto.Name
             };
 
             _db.Categories.Add(category);
@@ -45,8 +43,7 @@ namespace PersonalFinanceTracker.Core.Services
             return new CategoryDto
             {
                 CategoryId = category.CategoryId,
-                Name = dto.Name,
-                Type = dto.Type
+                Name = dto.Name
             };
         }
     }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PersonalFinanceTracker.Core.Dto.TransactionDto>
+﻿@model PersonalFinanceTracker.Web.Models.DashboardViewModel
 
 <div class="container-fluid mt-4">
 
@@ -33,9 +33,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (Model != null && Model.Any())
+                            @if (Model.Transactions != null && Model.Transactions.Any())
                             {
-                                foreach (var tx in Model)
+                                foreach (var tx in Model.Transactions)
                                 {
                                     <tr>
                                         <td>@tx.CategoryName</td>
@@ -43,12 +43,8 @@
                                         <td>@tx.Date.ToShortDateString()</td>
                                         <td>@tx.Note</td>
                                         <td>
-                                            <button class="btn btn-sm btn-warning me-1" onclick="alert('Edit transaction');">
-                                                Edit
-                                            </button>
-                                            <button class="btn btn-sm btn-danger" onclick="alert('Delete transaction');">
-                                                Delete
-                                            </button>
+                                            <button class="btn btn-sm btn-warning me-1" onclick="alert('Edit transaction');">Edit</button>
+                                            <button class="btn btn-sm btn-danger" onclick="alert('Delete transaction');">Delete</button>
                                         </td>
                                     </tr>
                                 }
@@ -105,8 +101,13 @@
                     @Html.Hidden("Id", 0)
 
                     <div class="mb-3">
-                        @Html.Label("CategoryName", "Category", new { @class = "form-label" })
-                        @Html.TextBox("CategoryName", null, new { @class = "form-control", placeholder = "Enter category", required = "required" })
+                        @Html.Label("CategoryId", "Category", new { @class = "form-label" })
+                        @Html.DropDownList(
+                            "CategoryId",
+                            Model.Categories != null ? new SelectList(Model.Categories, "CategoryId", "Name") : new SelectList(Enumerable.Empty<SelectListItem>()),
+                            "Select a category",
+                            new { @class = "form-control", required = "required" }
+                        )
                     </div>
 
                     <div class="mb-3">

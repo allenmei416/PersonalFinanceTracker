@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PersonalFinanceTracker.Data.Migrations
 {
     /// <inheritdoc />
@@ -17,8 +19,7 @@ namespace PersonalFinanceTracker.Data.Migrations
                 {
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,6 +46,21 @@ namespace PersonalFinanceTracker.Data.Migrations
                         principalTable: "Categories",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "CategoryId", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Food" },
+                    { 2, "Transport" },
+                    { 3, "Entertainment" },
+                    { 4, "Bills" },
+                    { 5, "Salary" },
+                    { 6, "Health" },
+                    { 7, "Shopping" },
+                    { 8, "Others" }
                 });
 
             migrationBuilder.CreateIndex(
