@@ -91,5 +91,62 @@ namespace PersonalFinanceTracker.Web.Controllers
 
             return View("Index", updatedVm);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteTransaction(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/transactions/{id}");
+
+            // Always reload transactions and categories for refreshing the view
+            var transactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
+            var categories = await _httpClient.GetFromJsonAsync<List<CategoryDto>>("api/categories");
+
+            var vm = new DashboardViewModel
+            {
+                Transactions = transactions ?? new List<TransactionDto>(),
+                Categories = categories ?? new List<CategoryDto>()
+            };
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.ShowModal = false;
+                ViewBag.ErrorMessage = $"Failed to delete transaction (Status: {response.StatusCode}).";
+            }
+
+            return View("Index", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditTransaction(TransactionDto model)
+        {
+            var categories = await _httpClient.GetFromJsonAsync<List<CategoryDto>>("api/categories");
+
+            var dto = new UpdateTransactionDto
+            {
+                CategoryId = model.CategoryId,
+                Amount = model.Amount,
+                Date = model.Date,
+                Note = model.Note
+            };
+
+            var response = await _httpClient.PutAsJsonAsync($"api/transactions/{model.TransactionId}", dto);
+
+            var transactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
+
+            var vm = new DashboardViewModel
+            {
+                Transactions = transactions ?? new List<TransactionDto>(),
+                Categories = categories ?? new List<CategoryDto>()
+            };
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.ErrorMessage = $"Failed to update transaction (Status: {response.StatusCode}).";
+            }
+            ModelState.Clear();
+
+            return View("Index", vm);
+        }
+
     }
 }
