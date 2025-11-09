@@ -1,4 +1,27 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿document.addEventListener("DOMContentLoaded", () => {
+    const editModal = document.getElementById('editTransactionModal');
 
-// Write your JavaScript code.
+    if (editModal) {
+        editModal.addEventListener('show.bs.modal', (event) => {
+            const button = event.relatedTarget;
+            if (!button) return;
+
+            editModal.querySelector('input[name="TransactionId"]').value = button.dataset.id;
+            editModal.querySelector('select[name="CategoryId"]').value = button.dataset.category;
+            editModal.querySelector('input[name="Amount"]').value = button.dataset.amount;
+            editModal.querySelector('input[name="Date"]').value = button.dataset.date;
+            editModal.querySelector('textarea[name="Note"]').value = button.dataset.note;
+        });
+    }
+
+    // Optional: client-side filter
+    const filterInput = document.getElementById('filterInput');
+    if (filterInput) {
+        filterInput.addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('table tbody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        });
+    }
+});

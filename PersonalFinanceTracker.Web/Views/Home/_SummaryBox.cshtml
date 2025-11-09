@@ -1,0 +1,7 @@
+﻿@model PersonalFinanceTracker.Web.Models.DashboardViewModel
+
+<div class="dashboard-box">
+    <h5>Summary</h5>
+    <p>Total Transactions: @(Model.Transactions?.Count() ?? 0)</p>
+    <p>Total Spending: @Model.Transactions?.Sum(t => t.Amount).ToString("C")</p>
+</div>

@@ -1,0 +1,64 @@
+﻿@model PersonalFinanceTracker.Web.Models.DashboardViewModel
+
+<div class="dashboard-box">
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+        <input type="text" class="form-control w-50" placeholder="Filter transactions..." id="filterInput" />
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+            Add Transaction
+        </button>
+    </div>
+
+    <div class="table-container">
+        <table class="table table-striped mb-0">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Date Added</th>
+                    <th>Note</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Transactions?.Any() ?? false)
+                {
+                    foreach (var tx in Model.Transactions)
+                    {
+                        <tr>
+                            <td>@tx.CategoryName</td>
+                            <td>@tx.Amount.ToString("C")</td>
+                            <td>@tx.Date.ToShortDateString()</td>
+                            <td>@tx.Note</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning me-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editTransactionModal"
+                                        data-id="@tx.TransactionId"
+                                        data-category="@tx.CategoryId"
+                                        data-amount="@tx.Amount"
+                                        data-date="@tx.Date.ToString("yyyy-MM-dd")"
+                                        data-note="@tx.Note">
+                                    Edit
+                                </button>
+
+                                <form asp-action="DeleteTransaction" asp-controller="Home" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@tx.TransactionId" />
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this transaction?');">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No transactions available.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
