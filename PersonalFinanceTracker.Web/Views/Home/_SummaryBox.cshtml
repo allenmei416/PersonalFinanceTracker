@@ -1,7 +1,40 @@
 ﻿@model PersonalFinanceTracker.Web.Models.DashboardViewModel
-
 <div class="dashboard-box">
     <h5>Summary</h5>
-    <p>Total Transactions: @(Model.Transactions?.Count() ?? 0)</p>
-    <p>Total Spending: @Model.Transactions?.Sum(t => t.Amount).ToString("C")</p>
+
+    @{
+        var total = Model.Transactions?.Sum(t => t.Amount) ?? 0;
+        var count = Model.Transactions?.Count() ?? 0;
+        var avgTransaction = count > 0 ? total / count : 0;
+        var thisMonth = Model.Transactions?
+        .Where(t => t.Date.Month == DateTime.Now.Month && t.Date.Year == DateTime.Now.Year)
+        .Sum(t => t.Amount) ?? 0;
+        var lastMonth = Model.Transactions?
+        .Where(t => t.Date.Month == DateTime.Now.AddMonths(-1).Month && t.Date.Year == DateTime.Now.AddMonths(-1).Year)
+        .Sum(t => t.Amount) ?? 0;
+        var monthDiff = lastMonth > 0 ? ((thisMonth - lastMonth) / lastMonth) * 100 : 0;
+        var topCategory = Model.Transactions?
+        .GroupBy(t => t.CategoryName)
+        .OrderByDescending(g => g.Sum(t => t.Amount))
+        .FirstOrDefault()?.Key ?? "N/A";
+    }
+
+    <p>📊 <strong>Total Transactions:</strong> @count</p>
+    <p>💸 <strong>Total Spending:</strong> @total.ToString("C")</p>
+    <p>📅 <strong>This Month:</strong> @thisMonth.ToString("C")</p>
+    <p>🏆 <strong>Top Category:</strong> @topCategory</p>
+    <p>
+        @if (monthDiff > 0)
+        {
+            <span style="color: #dc3545;">📉 <strong>vs Last Month:</strong> +@monthDiff.ToString("F1")% more</span>
+        }
+        else if (monthDiff < 0)
+        {
+            <span style="color: #198754;">📉 <strong>vs Last Month:</strong> @monthDiff.ToString("F1")% less</span>
+        }
+        else
+        {
+            <span class="text-muted">📉 <strong>vs Last Month:</strong> No change</span>
+        }
+    </p>
 </div>

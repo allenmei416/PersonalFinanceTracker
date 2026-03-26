@@ -16,8 +16,5 @@ namespace PersonalFinanceTracker.Web.Controllers
             var transactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
             return View(transactions);
         }
-
-
-
     }
 }

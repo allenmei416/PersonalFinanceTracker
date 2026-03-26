@@ -64,7 +64,7 @@ namespace PersonalFinanceTracker.API.Controllers
             try
             {
                 await _service.DeleteAsync(id);
-                return NoContent(); // 204 response is more standard for DELETE
+                return NoContent();
             }
             catch (KeyNotFoundException)
             {

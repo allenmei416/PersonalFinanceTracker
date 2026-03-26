@@ -1,9 +1,104 @@
-﻿<div class="col-md-4">
-    <div class="dashboard-box"><h5>Box 1</h5></div>
-</div>
+﻿@model PersonalFinanceTracker.Web.Models.DashboardViewModel
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <div class="col-md-4">
-    <div class="dashboard-box"><h5>Box 2</h5></div>
+    <div class="dashboard-box">
+        <h5>Spending by Category</h5>
+        @if (Model.SpendingByCategory.Any())
+        {
+            <canvas id="categoryChart" style="max-height: 400px;"></canvas>
+        }
+        else
+        {
+            <p class="text-muted">No transactions yet.</p>
+        }
+    </div>
 </div>
+
 <div class="col-md-4">
-    <div class="dashboard-box"><h5>Box 3</h5></div>
+    <div class="dashboard-box">
+        <h5>Monthly Spend (Last 6 Months)</h5>
+        @if (Model.MonthlySpend.Any())
+        {
+            <canvas id="monthlyChart" style="max-height: 400px;"></canvas>
+        }
+        else
+        {
+            <p class="text-muted">No transactions yet.</p>
+        }
+    </div>
 </div>
+
+<div class="col-md-4">
+    <div class="dashboard-box">
+        <h5> AI Insights</h5>
+        @if (!string.IsNullOrEmpty(Model.AiInsight))
+        {
+            <div style="font-size: 0.85rem; line-height: 1.6;">
+                @foreach (var line in Model.AiInsight.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var clean = System.Text.RegularExpressions.Regex.Replace(line.Trim(), @"\*\*(.*?)\*\*", "$1");
+                    var parts = clean.TrimStart('•', '-', ' ').Split('–', 2);
+                    if (parts.Length == 2)
+                    {
+                        <div style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; padding: 10px 12px; background: #f8f9fa; border-radius: 10px; border-left: 3px solid #258cfb;">
+                            <div>
+                                <div style="font-weight: 600; color: #212529; margin-bottom: 2px;">@parts[0].Trim()</div>
+                                <div style="color: #6c757d;">@parts[1].Trim()</div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="margin-bottom: 10px; padding: 10px 12px; background: #f8f9fa; border-radius: 10px; border-left: 3px solid #258cfb;">
+                            @clean.TrimStart('•', '-', ' ')
+                        </div>
+                    }
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">No insights available.</p>
+        }
+    </div>
+</div>
+
+<script>
+    const categoryCtx = document.getElementById('categoryChart');
+    if (categoryCtx) {
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.SpendingByCategory.Keys.Select(k => $"\"{k}\"")))],
+                datasets: [{
+                    data: [@Html.Raw(string.Join(",", Model.SpendingByCategory.Values.Select(v => v.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))))],
+                    borderWidth: 1
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+
+    const monthlyCtx = document.getElementById('monthlyChart');
+    if (monthlyCtx) {
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.MonthlySpend.Keys.Select(k => $"\"{k}\"")))],
+                datasets: [{
+                    label: 'Spending',
+                    data: [@Html.Raw(string.Join(",", Model.MonthlySpend.Values.Select(v => v.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))))],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+</script>

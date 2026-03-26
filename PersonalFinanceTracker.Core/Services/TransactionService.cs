@@ -15,7 +15,6 @@ namespace PersonalFinanceTracker.Core.Services
             _db = db;
         }
 
-        // GET ALL
         public async Task<IEnumerable<TransactionDto>> GetAllAsync()
         {
             return await _db.Transactions
@@ -32,8 +31,6 @@ namespace PersonalFinanceTracker.Core.Services
                 })
                 .ToListAsync();
         }
-
-        // GET BY ID
         public async Task<TransactionDto?> GetByIdAsync(int id)
         {
             var t = await _db.Transactions
@@ -53,7 +50,6 @@ namespace PersonalFinanceTracker.Core.Services
             };
         }
 
-        // CREATE
         public async Task<TransactionDto> CreateAsync(CreateTransactionDto dto)
         {
             var transaction = new Transaction
@@ -78,7 +74,6 @@ namespace PersonalFinanceTracker.Core.Services
             };
         }
 
-        // UPDATE
         public async Task<TransactionDto> UpdateAsync(int id, UpdateTransactionDto dto)
         {
             var transaction = await _db.Transactions.FindAsync(id);
@@ -103,7 +98,6 @@ namespace PersonalFinanceTracker.Core.Services
             };
         }
 
-        // DELETE
         public async Task DeleteAsync(int id)
         {
             var transaction = await _db.Transactions.FindAsync(id);

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalFinanceTracker.Core.Interfaces;
 using PersonalFinanceTracker.Core.Services;
 using PersonalFinanceTracker.Data;
+using System.Net.Http.Headers;
 
 namespace PersonalFinanceTracker.API
 {
@@ -28,6 +29,14 @@ namespace PersonalFinanceTracker.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddMemoryCache();
+            builder.Services.AddHttpClient("Anthropic", client =>
+            {
+                client.BaseAddress = new Uri("https://api.anthropic.com/");
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            });
+            builder.Services.AddScoped<IInsightService, InsightService>();
 
             var app = builder.Build();
 

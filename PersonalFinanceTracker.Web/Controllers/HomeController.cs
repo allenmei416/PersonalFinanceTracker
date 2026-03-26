@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using PersonalFinanceTracker.Core.Dto;
 using PersonalFinanceTracker.Web.Models;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace PersonalFinanceTracker.Web.Controllers
 {
@@ -16,50 +17,46 @@ namespace PersonalFinanceTracker.Web.Controllers
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
-        // --- INDEX PAGE ---
         public async Task<IActionResult> Index()
         {
             var transactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
             var categories = await _httpClient.GetFromJsonAsync<List<CategoryDto>>("api/categories");
+            var insight = await FetchInsightAsync();
 
-            var vm = new DashboardViewModel
-            {
-                Transactions = transactions ?? new List<TransactionDto>(),
-                Categories = categories ?? new List<CategoryDto>()
-            };
+            var vm = BuildViewModel(
+                transactions ?? new List<TransactionDto>(),
+                categories ?? new List<CategoryDto>(),
+                insight
+            );
 
             return View(vm);
         }
 
-
-        // --- PRIVACY PAGE ---
         public IActionResult Privacy()
         {
             return View();
         }
 
-        // --- ERROR PAGE ---
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        // --- ADD TRANSACTION ---
         [HttpPost]
         public async Task<IActionResult> AddTransaction(TransactionDto model)
         {
-            // Always reload categories for the dropdown
             var categories = await _httpClient.GetFromJsonAsync<List<CategoryDto>>("api/categories");
 
             if (!ModelState.IsValid)
             {
                 var transactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
-                var vm = new DashboardViewModel
-                {
-                    Transactions = transactions,
-                    Categories = categories
-                };
+                var insight = await FetchInsightAsync();
+                var vm = BuildViewModel(
+                    transactions ?? new List<TransactionDto>(),
+                    categories ?? new List<CategoryDto>(),
+                    insight
+                );
                 return View("Index", vm);
             }
 
@@ -72,22 +69,23 @@ namespace PersonalFinanceTracker.Web.Controllers
                 ViewBag.ErrorMessage = $"Error: {response.StatusCode}";
 
                 var transactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
-                var vm = new DashboardViewModel
-                {
-                    Transactions = transactions,
-                    Categories = categories
-                };
+                var insight = await FetchInsightAsync();
+                var vm = BuildViewModel(
+                    transactions ?? new List<TransactionDto>(),
+                    categories ?? new List<CategoryDto>(),
+                    insight
+                );
                 return View("Index", vm);
             }
 
-            // Refresh the dashboard with the updated transactions
             var updatedTransactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
+            var updatedInsight = await FetchInsightAsync();
 
-            var updatedVm = new DashboardViewModel
-            {
-                Transactions = updatedTransactions,
-                Categories = categories
-            };
+            var updatedVm = BuildViewModel(
+                updatedTransactions ?? new List<TransactionDto>(),
+                categories ?? new List<CategoryDto>(),
+                updatedInsight
+            );
 
             return View("Index", updatedVm);
         }
@@ -97,15 +95,15 @@ namespace PersonalFinanceTracker.Web.Controllers
         {
             var response = await _httpClient.DeleteAsync($"api/transactions/{id}");
 
-            // Always reload transactions and categories for refreshing the view
             var transactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
             var categories = await _httpClient.GetFromJsonAsync<List<CategoryDto>>("api/categories");
+            var insight = await FetchInsightAsync();
 
-            var vm = new DashboardViewModel
-            {
-                Transactions = transactions ?? new List<TransactionDto>(),
-                Categories = categories ?? new List<CategoryDto>()
-            };
+            var vm = BuildViewModel(
+                transactions ?? new List<TransactionDto>(),
+                categories ?? new List<CategoryDto>(),
+                insight
+            );
 
             if (!response.IsSuccessStatusCode)
             {
@@ -132,21 +130,63 @@ namespace PersonalFinanceTracker.Web.Controllers
             var response = await _httpClient.PutAsJsonAsync($"api/transactions/{model.TransactionId}", dto);
 
             var transactions = await _httpClient.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
+            var insight = await FetchInsightAsync();
 
-            var vm = new DashboardViewModel
-            {
-                Transactions = transactions ?? new List<TransactionDto>(),
-                Categories = categories ?? new List<CategoryDto>()
-            };
+            var vm = BuildViewModel(
+                transactions ?? new List<TransactionDto>(),
+                categories ?? new List<CategoryDto>(),
+                insight
+            );
 
             if (!response.IsSuccessStatusCode)
             {
                 ViewBag.ErrorMessage = $"Failed to update transaction (Status: {response.StatusCode}).";
             }
-            ModelState.Clear();
 
+            ModelState.Clear();
             return View("Index", vm);
         }
 
+        private async Task<string> FetchInsightAsync()
+        {
+            try
+            {
+                var insightResponse = await _httpClient.GetFromJsonAsync<JsonElement>("api/insight");
+                return insightResponse.GetProperty("insight").GetString() ?? string.Empty;
+            }
+            catch
+            {
+                return "Unable to load insight at this time.";
+            }
+        }
+
+        private DashboardViewModel BuildViewModel(
+            List<TransactionDto> transactions,
+            List<CategoryDto> categories,
+            string insight = "")
+        {
+            var spendingByCategory = transactions
+                .GroupBy(t => t.CategoryName ?? "Uncategorized")
+                .ToDictionary(g => g.Key, g => g.Sum(t => t.Amount));
+
+            var sixMonthsAgo = DateTime.Today.AddMonths(-5);
+            var monthlySpend = transactions
+                .Where(t => t.Date >= new DateTime(sixMonthsAgo.Year, sixMonthsAgo.Month, 1))
+                .GroupBy(t => new { t.Date.Year, t.Date.Month })
+                .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
+                .ToDictionary(
+                    g => new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMM yyyy"),
+                    g => g.Sum(t => t.Amount)
+                );
+
+            return new DashboardViewModel
+            {
+                Transactions = transactions,
+                Categories = categories,
+                SpendingByCategory = spendingByCategory,
+                MonthlySpend = monthlySpend,
+                AiInsight = insight
+            };
+        }
     }
 }
