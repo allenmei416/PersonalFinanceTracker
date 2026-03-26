@@ -1,10 +1,10 @@
-# 💰 Personal Finance Tracker
+# Personal Finance Tracker
 
 A full-stack budget dashboard built with ASP.NET Core, allowing users to track personal transactions, visualise spending by category, and monitor monthly spend trends.
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 > **Dashboard Overview**
 > ![Dashboard Overview](assets/dashboard_screenshot.png)
@@ -14,7 +14,7 @@ A full-stack budget dashboard built with ASP.NET Core, allowing users to track p
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -29,7 +29,7 @@ A full-stack budget dashboard built with ASP.NET Core, allowing users to track p
 
 ---
 
-## 🗂 Project Overview
+## Project Overview
 
 The solution is split into four projects:
 
@@ -47,7 +47,7 @@ The dashboard displays:
 
 ---
 
-## ⚙️ Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 
@@ -115,7 +115,7 @@ Press **F5** in Visual Studio. The dashboard will be available at `https://local
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 PersonalFinanceTracker/
@@ -137,7 +137,3 @@ PersonalFinanceTracker/
 ```
 
 ---
-
-## 📄 License
-
-This project is for personal/portfolio use. © 2025 Allen Mei
